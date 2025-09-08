@@ -1,0 +1,21 @@
+from telegram import Update
+from telegram.ext import ApplicationBuilder, ContextTypes, ChatMemberHandler
+import datetime
+
+# Siz yuborgan bot token
+TOKEN = '7741566432:AAFIs5qI8mfCNKok4XKjlZQlLuuVXczC9gA'
+
+# Bot guruhga kirganida ishlaydigan funksiya
+async def group_created(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.my_chat_member.new_chat_member.status == "member":
+        chat = update.effective_chat
+        today = datetime.datetime.now().strftime("%Y-%m-%d")
+        await context.bot.send_message(
+            chat_id=chat.id,
+            text=f"✅ Bu guruh {today} kuni ochilgan."
+        )
+
+# Botni ishga tushirish
+app = ApplicationBuilder().token(TOKEN).build()
+app.add_handler(ChatMemberHandler(group_created, ChatMemberHandler.MY_CHAT_MEMBER))
+app.run_polling()
